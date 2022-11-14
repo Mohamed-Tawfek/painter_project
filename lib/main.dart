@@ -17,14 +17,16 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
-
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     Future.delayed(const Duration(seconds: 4)).then((value) =>
-        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_)=>const HomePage()), (route) => false));
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (_) => const HomePage()),
+            (route) => false));
 
     return Scaffold(
       body: Center(
@@ -67,33 +69,47 @@ class _HomePageState extends State<HomePage> {
     super.initState();
   }
 
+  final GlobalKey<ScaffoldState> _key = GlobalKey(); // Create a key
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: SizedBox(
-          height: MediaQuery.of(context).size.height * 1,
-          child: Stack(
+      key: _key,
+      backgroundColor: Colors.white,
+      endDrawer: SizedBox(
+        width: 100,
+        child: SingleChildScrollView(
+          child: Column(
             children: [
-              Scribble(
-                notifier: notifier,
-                drawPen: true,
+              _buildColorToolbar(context),
+              const SizedBox(
+                height: 32,
               ),
-              Positioned(
-                top: 16,
-                right: 16,
-                child: Column(
-                  children: [
-                    _buildColorToolbar(context),
-                    const SizedBox(
-                      height: 32,
-                    ),
-                    _buildStrokeToolbar(context),
-                  ],
-                ),
-              )
+              _buildStrokeToolbar(context),
             ],
           ),
+        ),
+      ),
+      body: SafeArea(
+        child: Stack(
+          alignment: Alignment.topRight,
+          children: [
+            Scribble(
+              notifier: notifier,
+              drawPen: true,
+            ),
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Positioned(
+                child: IconButton(
+                  icon: const Icon(Icons.menu),
+                  onPressed: () {
+                    _key.currentState?.openEndDrawer();
+                  },
+                ),
+              ),
+            )
+          ],
         ),
       ),
     );
@@ -191,7 +207,7 @@ class _HomePageState extends State<HomePage> {
   Widget _buildPointerModeSwitcher(BuildContext context,
       {required bool penMode}) {
     return FloatingActionButton.small(
-      heroTag: 1,
+      heroTag: '1',
       onPressed: () => notifier.setAllowedPointersMode(
         penMode ? ScribblePointerMode.all : ScribblePointerMode.penOnly,
       ),
@@ -216,7 +232,7 @@ class _HomePageState extends State<HomePage> {
     return Padding(
       padding: const EdgeInsets.all(4),
       child: FloatingActionButton.small(
-        heroTag: 2,
+        heroTag: '20',
         tooltip: "Erase",
         backgroundColor: const Color(0xFFF7FBFF),
         elevation: isSelected ? 10 : 2,
@@ -240,7 +256,7 @@ class _HomePageState extends State<HomePage> {
     return Padding(
       padding: const EdgeInsets.all(4),
       child: FloatingActionButton.small(
-        heroTag: 3,
+          heroTag: '30',
           backgroundColor: color,
           elevation: isSelected ? 10 : 2,
           splashColor: Colors.black,
@@ -260,7 +276,7 @@ class _HomePageState extends State<HomePage> {
     BuildContext context,
   ) {
     return FloatingActionButton.small(
-      heroTag: 4,
+      heroTag: '4',
       tooltip: "Undo",
       onPressed: notifier.canUndo ? notifier.undo : null,
       disabledElevation: 0,
@@ -276,7 +292,7 @@ class _HomePageState extends State<HomePage> {
     BuildContext context,
   ) {
     return FloatingActionButton.small(
-      heroTag: 5,
+      heroTag: '5',
       tooltip: "Redo",
       onPressed: notifier.canRedo ? notifier.redo : null,
       disabledElevation: 0,
@@ -290,7 +306,7 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildClearButton(BuildContext context) {
     return FloatingActionButton.small(
-      heroTag: 6,
+      heroTag: '6',
       tooltip: "Clear",
       onPressed: notifier.clear,
       disabledElevation: 0,
