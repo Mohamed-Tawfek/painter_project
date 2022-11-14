@@ -16,17 +16,17 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   @override
-  void initState() {
+  void initState() { Future.delayed(const Duration(seconds: 4)).then((value) =>
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (_) => const HomePage()),
+              (route) => false));
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    Future.delayed(const Duration(seconds: 4)).then((value) =>
-        Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (_) => const HomePage()),
-            (route) => false));
+
 
     return Scaffold(
       body: Center(
@@ -100,13 +100,11 @@ class _HomePageState extends State<HomePage> {
             ),
             Padding(
               padding: const EdgeInsets.all(20.0),
-              child: Positioned(
-                child: IconButton(
-                  icon: const Icon(Icons.menu),
-                  onPressed: () {
-                    _key.currentState?.openEndDrawer();
-                  },
-                ),
+              child: IconButton(
+                icon: const Icon(Icons.menu),
+                onPressed: () {
+                  _key.currentState?.openEndDrawer();
+                },
               ),
             )
           ],
